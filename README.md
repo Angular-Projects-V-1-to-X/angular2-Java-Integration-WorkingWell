@@ -5,6 +5,7 @@ URL to visit the main page is : http://lteconsulting.fr/angular2boot/
 
 HOME GET STARTED COOKBOOK LICENSING ABOUT
 Angular 2 Boot
+
 Angular2Boot is in sync with Angular 2.0.0, see the Angular release notes !
 
 LATEST NEWS ! Angular2Boot will be presented at JavaOne 2016 this year ! We hope to meet your there and discuss with you !
@@ -44,32 +45,47 @@ How to build an application from the official archetype ?
 
 Use the archetype which builds a fully working Angular2 + SpringBoot application :
 
+
 mvn archetype:generate \
   -DarchetypeGroupId=fr.lteconsulting \
   -DarchetypeArtifactId=angular2-gwt.archetype \
   -DarchetypeVersion=1.6
+  
+  
 Note about the version : you can use either the latest release version like in the example above, or the next snapshot version (1.6-SNAPSHOT in this case) and benefit from the latest improvements and bug fixes. Features only available in the snapshot version are marked in the documentation. You can expect a new release few days after new features are tested and validated.
 
 Enter the desired groupId, artifactId, version and package and your application will be created in a sub directory named after the choosen artifactId.
 
 Enter into this directory and build your application :
 
+
 mvn clean install
+
+
 Everything should work fine. Now you can run the built application with this :
 
+
 java -jar target/YOUR_ARTIFACT_ID.jar
+
+
 This will launch the SpringBoot application with a minimal client side Angular 2 controller. When entering http://localhost:8080 in your browser, a page should load and show a “Your application is working !” message. This is the sign that everything has been bootstraped correctly and that you can begin to work. There is also an input box, if you change its content the previous title will change too. That’s shows that the two-way Angular data binding is working in your application !
 
 Development mode
 
 During development, building the entire application is too time-consuming. In order to save your time, you can stop the java process we just launched and launch the SpringBoot development mode instead :
 
+
 mvn spring-boot:run
+
+
 This will allow to have hot swapping of classes on the server side (to a certain extent, see documentation).
 
 You may also want to hot reload client classes when you change them. In this case you need to start the GWT Super Dev Mode. But that has to be done in another terminal because we don’t want to stop the Spring Boot server !
 
+
 mvn gwt:run-codeserver
+
+
 You can open the application project in your IDE (see the chapter on configuration problems that can happen), work on the code and refresh in the browser to get live updates.
 
 And now, what’s next ?
@@ -122,6 +138,7 @@ Angular2Boot entrypoint classes are very simple, the only thing you find is the 
 PlatformBrowserDynamic
   .platformBrowserDynamic()
   .bootstrapModule( ApplicationModule_AngularModule.getNgModulePrototype() );
+  
 The bootstrapModule method corresponds to the bootstrapModule function of Angular 2’s PlatformBrowserDynamic module. In fact it is bound to Java through GWT’s JsInterop, so behind the scene it is the same function that is called. The parameter of the bootstrapModule is the result of a call to the ApplicationModule_AngularModule.getNgModulePrototype() method. This method returns an Angular2-compatible constructor of the ApplicationModule class. The ApplicationModule_AngularModule class is automatically generated for you by Angular2Boot, as you will see later on.
 
 So here we just say to Angular to start with the ApplicationModule as the root module of our application.
@@ -145,9 +162,11 @@ Naturally, your java application too should declare a module. This is done in th
 	declarations = ApplicationComponent.class,
 	bootstrap = ApplicationComponent.class )
 @JsType
+
 public class ApplicationModule
 {
 }
+
 It defines the root module of our application. It imports the Angular BrowserModule and FormsModule. The first one brings everything that is needed to make Angular 2 work in the browser (as you may know, Angular can run in other environments than browsers) and the second one (FromsModule) brings useful usual form directives like ngModel. The module then declares the ApplicationComponent component so that it is avalaible to other modules if needed. The bootstrap parameter says that when the module is bootstrapped, it starts with the ApplicationComponent component, which we will examine right now.
 
 ApplicationComponent.java
@@ -159,12 +178,14 @@ Here is the source code of the main component application :
 	template = "<h1>{ {title}}</h1>" +
   	"You can edit the title by changing the text in this box :<br/>"+
   	"<input [(ngModel)]='title'/>" )
+	
 @JsType
 public class ApplicationComponent
 {
 	@JsProperty
 	private String title = "Your application is working !";
 }
+
 It doesn’t do much but it already uses some of the main concepts of Angular : Components. Here are the very necessary two steps to create an Angular component out of a Java class :
 
 add the @Component annotation. This generates metadata about your component for Angular. Refer to the Angular documentation about the meaning of this annotation fields. Putting this annotation triggers the generation of the ApplicationComponent_AngularComponent java class.
@@ -177,6 +198,7 @@ The title field is declared like this:
 
 @JsProperty
 private String title = "Your application is working !";
+
 The @JsProperty tells the GWT compiler to make the field accesible to the javascript world and to Angular, even thou it is declared private. If it was declared public you would not need to put this annotation (the @JsType annotation on the class itself makes all the public fields and methods accesible to javascript).
 
 If this field’s value change, Angular will know about and the DOM will be updated accordingly (given the change is made inside the angular zone, meaning inside an event handler and so on).
@@ -204,6 +226,7 @@ public class ApplicationController
 		SpringApplication.run( ApplicationController.class, args );
 	}
 }
+
 Tour of Heroes tutorial
 
 This tutorial walks you through the basics of creating an Angular2Boot application. It is strongly advised to read so that you gain the basic knowledge.
